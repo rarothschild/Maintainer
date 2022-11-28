@@ -6,4 +6,4 @@ class ObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Object
-            fields = ['id','owner','nickname','type','make','model','serialNum']
+            fields = ['id','owner','nickname','category','make','model','serialNum']

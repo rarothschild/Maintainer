@@ -2,6 +2,7 @@ import { createStore } from "solid-js/store";
 import { createRouteAction } from "solid-start/data";
 import axios from 'axios';
 import { redirect } from "solid-start";
+import { setUser } from "~/root";
 
 export default function Login() {
 
@@ -15,9 +16,12 @@ export default function Login() {
         const email = formData.get("email");
         const password = formData.get("password");
         const body = JSON.stringify({ email, password });
-        const res = new Response(await axios.post(`http://127.0.0.1:8000/login/`, body, config))
-        console.log(res.json())
-        return redirect("/dashboard")
+        const p = await new Promise( (resolve, reject) => {
+            axios.post(`http://127.0.0.1:8000/login/`, body, config)
+                .then((response) => response.data)
+                .then((resp) => setUser({user: resp.user, token: resp.token}))
+        })
+        return redirect("/dashboard/")
       });
 
     return (

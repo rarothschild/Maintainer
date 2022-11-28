@@ -9,7 +9,12 @@ from .models import Object
 class ObjectViewSet(viewsets.ModelViewSet):
     queryset = Object.objects.all()
     serializer_class = ObjectSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
+    def list(self,request):
+        queryset = Object.objects.all()
+        serializer = ObjectSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self,request):
         print(request.user)
