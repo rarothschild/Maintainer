@@ -1,20 +1,12 @@
 // @refresh reload
-import { createSignal, createEffect, } from "solid-js"
+import { createSignal, createEffect, createContext, useContext } from "solid-js"
 import { createStore } from "solid-js/store";
 import { Suspense } from "solid-js";
 import {A, Body, ErrorBoundary, FileRoutes,
   Head, Html, Meta, Routes, Scripts, Title, } from "solid-start";
 import Header from "~/components/Header"
 import "./root.css";
-
-export const [user, setUser] = createStore({
-  user: null,
-  token: "",
-});
-
-createEffect(()=>{
-  console.log(user.user)
-})
+import { UserProvider } from "./providers";
 
 export default function Root() {
   return (
@@ -27,10 +19,10 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Header />
-            <Routes>
-              <FileRoutes />
-            </Routes>
+              <Header />
+              <Routes>
+                <FileRoutes />
+              </Routes>
           </ErrorBoundary>
         </Suspense>
         <Scripts />

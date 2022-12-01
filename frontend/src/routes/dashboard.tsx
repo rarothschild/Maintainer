@@ -1,4 +1,31 @@
+import { createRouteData } from "solid-start";
+import axios from 'axios';
+import { createSignal } from "solid-js";
+import userSignal from "../lib/user";
+
 export default function dashboard() {
+    const { user, setUser } = userSignal;
+    const [items,setItems] = createSignal([])
+    console.log(user())
+    function loadObjects() {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token'
+            }
+        };
+        const data = createRouteData(async () => {
+            axios.get(`http://127.0.0.1:8000/objects/`)
+                    .then((response) => setItems(response.data))
+            }
+        );
+     
+      data() // null, data is not yet loaded, triggers Suspense
+      data.loading // true, data is loading
+      data.latest // null, data is not yet loaded
+    }
+
     return(
         <div class="flex flex-row h-[calc(100vh-5rem)]">
             <aside class="w-48 border-x border-black bg-gray-400">
