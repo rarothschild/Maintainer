@@ -2,12 +2,19 @@ import { createStore } from "solid-js/store";
 import { createRouteAction } from "solid-start/data";
 import { redirect } from "solid-start";
 
+import axios from 'axios';
+import { defaultHeaders } from "~/lib/apiConfig";
 
 export default function Login() {
     const [_, { Form }] = createRouteAction(async (formData: FormData) => {
         const email = formData.get("email");
         const password = formData.get("password");
-        
+        const body = JSON.stringify({ email, password });
+        const p = await new Promise( (resolve, reject) => {
+            axios.post(`http://127.0.0.1:8000/login/`, body, defaultHeaders)
+                .then((response) => response.data)
+                .then((resp) => )
+        })
         return redirect('/dashboard')
       });
 

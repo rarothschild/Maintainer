@@ -5,7 +5,7 @@ import { defaultHeaders } from "~/lib/apiConfig";
 
 const storage = createCookieSessionStorage({
     cookie: {
-      name: "seession",
+      name: "session",
       // secure doesn't work on localhost for Safari
       // https://web.dev/when-to-use-local-https/
       secure: import.meta.env.PROD,
@@ -16,7 +16,6 @@ const storage = createCookieSessionStorage({
       httpOnly: true
     }
   });
-   
 
 export async function login(request: Request, email: string, password: string) {
     const session = await storage.getSession(
