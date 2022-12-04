@@ -23,19 +23,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # knox imports
 # from knox.models import AuthToken
 # local apps import
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
-
-class RegisterView(generics.GenericAPIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request, format='json'):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from .serializers import UserSerializer
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
@@ -56,17 +44,17 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AllowAny]
 
-#class LoginView(KnoxLoginView):
-#    permission_classes = (permissions.AllowAny,)
-#
-#    def post(self, request, format=None):
-#        serializer = AuthTokenSerializer(data=request.data)
-#        serializer.is_valid(raise_exception=True)
-#        user = serializer.validated_data['user']
-#        login(request, user)
-#        return super(LoginView, self).post(request, format=None)
+    def create(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class GroupViewSet(viewsets.ModelViewSet):
 #     """
