@@ -6,7 +6,6 @@ import {A, Body, ErrorBoundary, FileRoutes,
   Head, Html, Meta, Routes, Scripts, Title, } from "solid-start";
 import Header from "~/components/Header"
 import "./root.css";
-import { UserProvider } from "./providers";
 
 export default function Root() {
   return (

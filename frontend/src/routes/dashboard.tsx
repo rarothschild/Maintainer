@@ -1,7 +1,29 @@
-import { createRouteData } from "solid-start";
+import {
+    createServerAction$,
+    createServerData$,
+    redirect
+  } from 'solid-start/server'
 import axios from 'axios';
 import { createSignal } from "solid-js";
 import userSignal from "../lib/user";
+
+export function routeData() {
+    const user = createServerData$(async (_, { request }) => {
+      const user = await getUser(request)
+  
+      if (!user) {
+        throw redirect('/login')
+      }
+      return user
+    })
+  
+    const [todos, { refetch }] = createResource<Todo[]>(async () => {
+      const { data } = await urqlClient().query(TODOS, {}).toPromise()
+      return data.todos
+    })
+  
+    return { user, todos, refetchTodos: refetch }
+  }
 
 export default function dashboard() {
     const { user, setUser } = userSignal;
