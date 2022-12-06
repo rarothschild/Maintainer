@@ -12,7 +12,7 @@ class ObjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self,request):
-        queryset = Object.objects.all()
+        queryset = Object.objects.filter(owner=request.user)
         serializer = ObjectSerializer(queryset, many=True)
         return Response(serializer.data)
 

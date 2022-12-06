@@ -1,7 +1,10 @@
 import { createCookieSessionStorage, FormError, redirect } from 'solid-start'
-import { loginInstance } from './axios'
 
 // https://tahazsh.com/blog/building-a-solidjs-app-from-scratch/
+
+import axios from 'axios';
+
+const baseURL = 'http://127.0.0.1:8000/api/';
 
 const storage = createCookieSessionStorage({
   cookie: {
@@ -22,7 +25,16 @@ interface LoginForm {
 
 export const login = async ({ email, password }: LoginForm) => {
     
-    const tokens = await loginInstance.post('token/', {
+    const axiosInstance = axios.create({
+      baseURL: baseURL,
+      timeout: 5000,
+      headers: {
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+      }
+    })
+
+    const tokens = await axiosInstance.post('token/', {
         email: email,
         password: password
     }).then((res) => res.data)
@@ -38,12 +50,34 @@ export const login = async ({ email, password }: LoginForm) => {
     }
   }
 
-export async function getAccessToken(request: Request) {
-    const session = await storage.getSession(
-      request.headers.get('Cookie')
-    );
-   
-    const token = session.get('tokenAccess');
-    return token;
-  }
+export const getUser = async (request: Request) => {
 
+    const session = await storage.getSession(request.headers.get('Cookie'))
+    const token = session.get('token')
+    if (!token) {
+      console.log('No auth token found')
+      return null
+    }
+
+    console.log(token)
+
+    const axiosInstance = axios.create({
+      baseURL: baseURL,
+      timeout: 5000,
+      headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+      }
+    })
+  
+    const user = await axiosInstance.get('user/')
+                                    .then((res) => res.data)
+  
+    const result = await urqlClient().query(CURRENT_USER, {}).toPromise()
+  
+    if (!result.data?.currentUser) {
+      return redirect('/login')
+    }
+    return result.data.currentUser
+  }
